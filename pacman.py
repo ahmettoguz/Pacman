@@ -106,6 +106,15 @@ def assingPlaceToPlayer():
     game_Board[locations["player"][0]][locations["player"][1]] = CELL_PLAYER
 
 
+def assignPlaceToMonster():
+    game_Board[locations["monster1"][0]
+               ][locations["monster1"][1]] = CELL_MONSTER
+    game_Board[locations["monster2"][0]
+               ][locations["monster2"][1]] = CELL_MONSTER
+    game_Board[locations["monster3"][0]
+               ][locations["monster3"][1]] = CELL_MONSTER
+
+
 def assingPlaceToMonsters():
     # monster 1
     pass
@@ -137,7 +146,27 @@ def clearScreen():
 
 
 def initToStartAgain():
-    pass
+    global directions
+    global locations
+    global speed
+    global score
+    global game_Status
+    global game_Board
+
+    speed = 0.3
+    score = 0
+
+    directions = {"player": None, "monster1": None,
+                  "monster2": None, "monster3": None}
+
+    locations = {"player": [7, 10], "monster1": [
+        5, 8], "monster2": [5, 9], "monster3": [5, 10]}
+
+    game_Board = initGameBoard()
+    initScoreToBoard()
+    placeWallToBoard()
+    placeMonstersToBoard()
+    assingPlaceToPlayer()
 
 
 def on_key_press(event):
@@ -152,6 +181,7 @@ def on_key_press(event):
     elif event.name == 'space':
         if game_Status == END:
             initToStartAgain()
+
         game_Status = PLAY
 
     elif (event.name == 'up' or event.name == 'w') and (game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_FOOD):
@@ -178,6 +208,10 @@ def on_key_press(event):
 
 def clearCurrentLocation():
     game_Board[locations["player"][0]][locations["player"][1]] = CELL_EMPTY
+
+
+def clearMonsterLocation(m):
+    game_Board[locations[m][0]][locations[m][1]] = CELL_EMPTY
 
 
 def movePlayer():
@@ -241,8 +275,34 @@ def increaseScore():
 def checkLose():
     global game_Status
 
+    # player movement
     if (directions["player"] == UP and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_MONSTER) or (directions["player"] == RIGHT and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_MONSTER) or (directions["player"] == DOWN and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_MONSTER) or (directions["player"] == LEFT and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_MONSTER):
         game_Status = END
+
+    # monster movement
+    for index in range(1, 3 + 1):
+        m = "monster" + str(index)
+
+        if (directions[m] == UP and game_Board[locations[m][0] - 1][locations[m][1]] == CELL_PLAYER) or (directions[m] == RIGHT and game_Board[locations[m][0]][locations[m][1] + 1] == CELL_PLAYER) or (directions[m] == DOWN and game_Board[locations[m][0] + 1][locations[m][1]] == CELL_PLAYER) or (directions[m] == LEFT and game_Board[locations[m][0]][locations[m][1] - 1] == CELL_PLAYER):
+            game_Status = END
+
+
+def moveMonsters():
+    for index in range(1, 3 + 1):
+        m = "monster" + str(index)
+
+        clearMonsterLocation(m)
+
+        if directions[m] == UP and (game_Board[locations[m][0] - 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_MONSTER):
+            locations[m][0] = locations[m][0] - 1
+        elif directions[m] == RIGHT and (game_Board[locations[m][0]][locations[m][1] + 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_MONSTER):
+            locations[m][1] = locations[m][1] + 1
+        elif directions[m] == DOWN and (game_Board[locations[m][0] + 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_MONSTER):
+            locations[m][0] = locations[m][0] + 1
+        elif directions[m] == LEFT and (game_Board[locations[m][0]][locations[m][1] - 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_MONSTER):
+            locations[m][1] = locations[m][1] - 1
+
+        assignPlaceToMonster()
 
 
 # MAIN--------
@@ -267,13 +327,17 @@ speed = 0.3
 score = 0
 game_Status = START
 
-directions = {"player": None, "monster1": None,
+directions = {"player": None, "monster1": DOWN,
               "monster2": None, "monster3": None}
 
-directions["player"] = None
+# directions = {"player": None, "monster1": None,
+#               "monster2": None, "monster3": None}
 
-locations = {"player": [7, 10], "monster1": [
-    5, 8], "monster2": [5, 9], "monster3": [5, 10]}
+
+# locations = {"player": [7, 10], "monster1": [
+#     5, 8], "monster2": [5, 9], "monster3": [5, 10]}
+locations = {"player": [7, 6], "monster1": [
+    2, 6], "monster2": [5, 9], "monster3": [5, 10]}
 
 keyboard.on_press(on_key_press)
 game_Board = initGameBoard()
@@ -289,6 +353,7 @@ while True:
     if game_Status == PLAY:
         increaseScore()
         displayTitle()
+        moveMonsters()
         movePlayer()
         displayBoard()
 
