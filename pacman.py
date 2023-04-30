@@ -88,15 +88,15 @@ def displayBoard():
     for r in range(0, ROW):
         for c in range(0, COL):
             if(game_Board[r][c] == CELL_EMPTY):
-                print(" ", end="")
+                print("  ", end="")
             elif(game_Board[r][c] == CELL_WALL_HORIZONTAL):
-                print("◘", end="")
+                print("🟩", end="")
             elif(game_Board[r][c] == CELL_WALL_VERTICAL):
-                print("◘", end="")
+                print("🟩", end="")
             elif(game_Board[r][c] == CELL_PLAYER):
-                print("☺", end="")
+                print("🙂", end="")
             elif(game_Board[r][c] == CELL_MONSTER1 or CELL_MONSTER2 or CELL_MONSTER3):
-                print("M", end="")
+                print("👻", end="")
         print()
 
 
@@ -119,7 +119,7 @@ def placeMonstersToBoard():
 
 
 def displayScore():
-    print("      Score: " + str(score), end="\n")
+    print("             Score: " + str(score), end="\n")
 
 
 def clearScreen():
@@ -135,7 +135,6 @@ def on_key_press(event):
         os._exit(0)
 
     if (event.name == 'up' or event.name == 'w') and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
-        print("girdi")
         player_Direction = UP
     if (event.name == 'right' or event.name == 'd') and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY:
         player_Direction = RIGHT
