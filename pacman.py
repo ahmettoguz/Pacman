@@ -97,7 +97,7 @@ def displayBoard():
                 print("🙂", end="")
             elif(game_Board[r][c] == CELL_FOOD):
                 print("🍕", end="")
-            elif(game_Board[r][c] == CELL_MONSTER1 or CELL_MONSTER2 or CELL_MONSTER3):
+            elif(game_Board[r][c] == CELL_MONSTER):
                 print("👻", end="")
         print()
 
@@ -113,11 +113,11 @@ def assingPlaceToMonsters():
 
 def placeMonstersToBoard():
     game_Board[locations["monster1"][0]
-               ][locations["monster1"][1]] = CELL_MONSTER1
+               ][locations["monster1"][1]] = CELL_MONSTER
     game_Board[locations["monster2"][0]
-               ][locations["monster2"][1]] = CELL_MONSTER2
+               ][locations["monster2"][1]] = CELL_MONSTER
     game_Board[locations["monster3"][0]
-               ][locations["monster3"][1]] = CELL_MONSTER3
+               ][locations["monster3"][1]] = CELL_MONSTER
 
 
 def displayTitle():
@@ -128,12 +128,16 @@ def displayTitle():
     elif speed == 0.5:
         speedTitle = "Slow"
 
-    print("         Speed : " + speedTitle +
+    print("        Speed : " + speedTitle +
           " - Score: " + str(score), end="\n")
 
 
 def clearScreen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def initToStartAgain():
+    pass
 
 
 def on_key_press(event):
@@ -145,25 +149,27 @@ def on_key_press(event):
     if event.name == 'esc':
         os._exit(0)
 
-    # if event.name == 'm':
-    #     game_Status == PLAY
+    elif event.name == 'space':
+        if game_Status == END:
+            initToStartAgain()
+        game_Status = PLAY
 
-    if (event.name == 'up' or event.name == 'w') and (game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_FOOD):
+    elif (event.name == 'up' or event.name == 'w') and (game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_FOOD):
         directions["player"] = UP
-    if (event.name == 'right' or event.name == 'd') and (game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_FOOD):
+    elif (event.name == 'right' or event.name == 'd') and (game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_FOOD):
         directions["player"] = RIGHT
-    if (event.name == 'down' or event.name == 's') and (game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_FOOD):
+    elif (event.name == 'down' or event.name == 's') and (game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_FOOD):
         directions["player"] = DOWN
-    if (event.name == 'left' or event.name == 'a') and (game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_FOOD):
+    elif (event.name == 'left' or event.name == 'a') and (game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_FOOD):
         directions["player"] = LEFT
 
-    if event.name == '-':
+    elif event.name == '-':
         if(speed == 0.1):
             speed = 0.3
         elif(speed == 0.3):
             speed = 0.5
 
-    if event.name == '+':
+    elif event.name == '+':
         if(speed == 0.5):
             speed = 0.3
         elif(speed == 0.3):
@@ -232,6 +238,13 @@ def increaseScore():
         addFood()
 
 
+def checkLose():
+    global game_Status
+
+    if (directions["player"] == UP and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_MONSTER) or (directions["player"] == RIGHT and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_MONSTER) or (directions["player"] == DOWN and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_MONSTER) or (directions["player"] == LEFT and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_MONSTER):
+        game_Status = END
+
+
 # MAIN--------
 ROW = 11
 COL = 20
@@ -240,9 +253,7 @@ CELL_EMPTY = 1000
 CELL_WALL_VERTICAL = 1001
 CELL_WALL_HORIZONTAL = 1002
 CELL_PLAYER = 1003
-CELL_MONSTER1 = 1004
-CELL_MONSTER2 = 1005
-CELL_MONSTER3 = 1006
+CELL_MONSTER = 1004
 UP = 1007
 DOWN = 1008
 LEFT = 1009
@@ -250,10 +261,11 @@ RIGHT = 1010
 CELL_FOOD = 1011
 PLAY = 1012
 END = 1013
+START = 1014
 
 speed = 0.3
 score = 0
-game_Status = PLAY
+game_Status = START
 
 directions = {"player": None, "monster1": None,
               "monster2": None, "monster3": None}
@@ -272,16 +284,26 @@ assingPlaceToPlayer()
 
 
 clearScreen()
-while True and game_Status == PLAY:
-    increaseScore()
-    displayTitle()
-    movePlayer()
-    displayBoard()
-    # addFood()
+while True:
+    checkLose()
+    if game_Status == PLAY:
+        increaseScore()
+        displayTitle()
+        movePlayer()
+        displayBoard()
 
+    elif game_Status == END:
+        print("Game is over with score: " + str(score))
+        print("Press space to play again.")
+
+    elif game_Status == START:
+        print("Press space to start game.")
+        print("Press esc to end game..")
+        print("Good Luck...")
     time.sleep(speed)
     clearScreen()
 
 
 # speed can be changed.
 # esc terminates program directly
+# foods generated automatically
