@@ -2,7 +2,7 @@
 import os
 import keyboard
 import time
-import sys
+import random
 
 
 def initGameBoard():
@@ -95,6 +95,8 @@ def displayBoard():
                 print("🟩", end="")
             elif(game_Board[r][c] == CELL_PLAYER):
                 print("🙂", end="")
+            elif(game_Board[r][c] == CELL_FOOD):
+                print("🍕", end="")
             elif(game_Board[r][c] == CELL_MONSTER1 or CELL_MONSTER2 or CELL_MONSTER3):
                 print("👻", end="")
         print()
@@ -118,8 +120,16 @@ def placeMonstersToBoard():
                ][locations["monster3"][1]] = CELL_MONSTER3
 
 
-def displayScore():
-    print("             Score: " + str(score), end="\n")
+def displayTitle():
+    if speed == 0.1:
+        speedTitle = "Fast"
+    elif speed == 0.3:
+        speedTitle = "Normal"
+    elif speed == 0.5:
+        speedTitle = "Slow"
+
+    print("         Speed : " + speedTitle +
+          " - Score: " + str(score), end="\n")
 
 
 def clearScreen():
@@ -128,28 +138,36 @@ def clearScreen():
 
 def on_key_press(event):
     # print(f"Key '{event.name}' pressed")
-    global player_Direction
+    global directions
     global speed
+    global game_Status
 
     if event.name == 'esc':
         os._exit(0)
 
-    if (event.name == 'up' or event.name == 'w') and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
-        player_Direction = UP
-    if (event.name == 'right' or event.name == 'd') and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY:
-        player_Direction = RIGHT
-    if (event.name == 'left' or event.name == 'a') and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY:
-        player_Direction = LEFT
-    if (event.name == 'down' or event.name == 's') and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY:
-        player_Direction = DOWN
+    # if event.name == 'm':
+    #     game_Status == PLAY
 
-    if event.name == 'l':
-        if(speed < 0.5):
-            speed += 0.1
+    if (event.name == 'up' or event.name == 'w') and (game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_FOOD):
+        directions["player"] = UP
+    if (event.name == 'right' or event.name == 'd') and (game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_FOOD):
+        directions["player"] = RIGHT
+    if (event.name == 'down' or event.name == 's') and (game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_FOOD):
+        directions["player"] = DOWN
+    if (event.name == 'left' or event.name == 'a') and (game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_FOOD):
+        directions["player"] = LEFT
 
-    if event.name == 'k':
-        if(speed > 0.2):
-            speed -= 0.1
+    if event.name == '-':
+        if(speed == 0.1):
+            speed = 0.3
+        elif(speed == 0.3):
+            speed = 0.5
+
+    if event.name == '+':
+        if(speed == 0.5):
+            speed = 0.3
+        elif(speed == 0.3):
+            speed = 0.1
 
 
 def clearCurrentLocation():
@@ -159,16 +177,59 @@ def clearCurrentLocation():
 def movePlayer():
     clearCurrentLocation()
 
-    if player_Direction == UP and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
+    if directions["player"] == UP and (game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_FOOD):
         locations["player"][0] = locations["player"][0] - 1
-    elif player_Direction == DOWN and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY:
-        locations["player"][0] = locations["player"][0] + 1
-    elif player_Direction == RIGHT and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY:
+    elif directions["player"] == RIGHT and (game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_FOOD):
         locations["player"][1] = locations["player"][1] + 1
-    elif player_Direction == LEFT and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY:
+    elif directions["player"] == DOWN and (game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY or game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_FOOD):
+        locations["player"][0] = locations["player"][0] + 1
+    elif directions["player"] == LEFT and (game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY or game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_FOOD):
         locations["player"][1] = locations["player"][1] - 1
 
     assingPlaceToPlayer()
+
+
+def initScoreToBoard():
+    game_Board[3][1] = CELL_FOOD
+    game_Board[1][3] = CELL_FOOD
+
+    game_Board[7][1] = CELL_FOOD
+    game_Board[9][3] = CELL_FOOD
+
+    game_Board[5][5] = CELL_FOOD
+
+    game_Board[1][8] = CELL_FOOD
+    game_Board[1][11] = CELL_FOOD
+
+    game_Board[9][8] = CELL_FOOD
+    game_Board[9][11] = CELL_FOOD
+
+    game_Board[5][14] = CELL_FOOD
+
+    game_Board[1][16] = CELL_FOOD
+    game_Board[3][18] = CELL_FOOD
+
+    game_Board[9][16] = CELL_FOOD
+    game_Board[7][18] = CELL_FOOD
+
+
+def addFood():
+    r = random.randint(1, ROW-1)
+    c = random.randint(1, COL-1)
+
+    while game_Board[r][c] != CELL_EMPTY:
+        r = random.randint(1, ROW-1)
+        c = random.randint(1, COL-1)
+
+    game_Board[r][c] = CELL_FOOD
+
+
+def increaseScore():
+    global score
+
+    if (directions["player"] == UP and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_FOOD) or (directions["player"] == RIGHT and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_FOOD) or (directions["player"] == DOWN and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_FOOD) or (directions["player"] == LEFT and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_FOOD):
+        score += 1
+        addFood()
 
 
 # MAIN--------
@@ -186,26 +247,41 @@ UP = 1007
 DOWN = 1008
 LEFT = 1009
 RIGHT = 1010
+CELL_FOOD = 1011
+PLAY = 1012
+END = 1013
 
 speed = 0.3
 score = 0
+game_Status = PLAY
 
-player_Direction = None
+directions = {"player": None, "monster1": None,
+              "monster2": None, "monster3": None}
 
-locations = {"player": [7, 6], "monster1": [
+directions["player"] = None
+
+locations = {"player": [7, 10], "monster1": [
     5, 8], "monster2": [5, 9], "monster3": [5, 10]}
 
 keyboard.on_press(on_key_press)
 game_Board = initGameBoard()
+initScoreToBoard()
 placeWallToBoard()
 placeMonstersToBoard()
 assingPlaceToPlayer()
 
+
 clearScreen()
-while True:
-    displayScore()
+while True and game_Status == PLAY:
+    increaseScore()
+    displayTitle()
     movePlayer()
     displayBoard()
+    # addFood()
+
     time.sleep(speed)
     clearScreen()
-    pass
+
+
+# speed can be changed.
+# esc terminates program directly
