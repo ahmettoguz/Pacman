@@ -335,7 +335,7 @@ directions = {"player": None, "monster1": DOWN,
 
 
 # locations = {"player": [7, 10], "monster1": [
-#     5, 8], "monster2": [5, 9], "monster3": [5, 10]}
+#     5, 8], "monster2": [5, 9], "monster3": [5, 10]} 
 locations = {"player": [7, 6], "monster1": [
     2, 6], "monster2": [5, 9], "monster3": [5, 10]}
 
