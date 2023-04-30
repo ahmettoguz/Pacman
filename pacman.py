@@ -129,30 +129,45 @@ def clearScreen():
 def on_key_press(event):
     # print(f"Key '{event.name}' pressed")
     global player_Direction
+    global speed
 
     if event.name == 'esc':
         os._exit(0)
 
-    if event.name == 'up':
+    if (event.name == 'up' or event.name == 'w') and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
+        print("girdi")
         player_Direction = UP
-    if event.name == 'right':
+    if (event.name == 'right' or event.name == 'd') and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY:
         player_Direction = RIGHT
-    if event.name == 'left':
+    if (event.name == 'left' or event.name == 'a') and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY:
         player_Direction = LEFT
-    if event.name == 'down':
+    if (event.name == 'down' or event.name == 's') and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY:
         player_Direction = DOWN
+
+    if event.name == 'l':
+        if(speed < 0.5):
+            speed += 0.1
+
+    if event.name == 'k':
+        if(speed > 0.2):
+            speed -= 0.1
 
 
 def clearCurrentLocation():
     game_Board[locations["player"][0]][locations["player"][1]] = CELL_EMPTY
 
+
 def movePlayer():
     clearCurrentLocation()
 
-    if player_Direction == UP and locations["player"][0] != 0 and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
+    if player_Direction == UP and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
         locations["player"][0] = locations["player"][0] - 1
-    elif player_Direction == DOWN and locations["player"][0] != 0 and game_Board[locations["player"][0] - 1][locations["player"][1]] == CELL_EMPTY:
-        locations["player"][0] = locations["player"][0] - 1
+    elif player_Direction == DOWN and game_Board[locations["player"][0] + 1][locations["player"][1]] == CELL_EMPTY:
+        locations["player"][0] = locations["player"][0] + 1
+    elif player_Direction == RIGHT and game_Board[locations["player"][0]][locations["player"][1] + 1] == CELL_EMPTY:
+        locations["player"][1] = locations["player"][1] + 1
+    elif player_Direction == LEFT and game_Board[locations["player"][0]][locations["player"][1] - 1] == CELL_EMPTY:
+        locations["player"][1] = locations["player"][1] - 1
 
     assingPlaceToPlayer()
 
@@ -173,6 +188,7 @@ DOWN = 1008
 LEFT = 1009
 RIGHT = 1010
 
+speed = 0.3
 score = 0
 
 player_Direction = None
@@ -191,6 +207,6 @@ while True:
     displayScore()
     movePlayer()
     displayBoard()
-    time.sleep(1)
+    time.sleep(speed)
     clearScreen()
     pass
