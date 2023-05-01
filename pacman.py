@@ -403,8 +403,3 @@ while True:
         print("Good Luck...")
     time.sleep(speed)
     clearScreen()
-
-
-# speed can be changed.
-# esc terminates program directly
-# foods generated automatically
