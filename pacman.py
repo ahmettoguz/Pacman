@@ -296,6 +296,7 @@ def moveMonsters():
         decideMonsterDirection(m)
 
         if directions[m] == UP and (game_Board[locations[m][0] - 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_MONSTER):
+            print("yukarı gitti")
             locations[m][0] = locations[m][0] - 1
 
         elif directions[m] == RIGHT and (game_Board[locations[m][0]][locations[m][1] + 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_MONSTER):
@@ -307,6 +308,7 @@ def moveMonsters():
         elif directions[m] == LEFT and (game_Board[locations[m][0]][locations[m][1] - 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_MONSTER):
             locations[m][1] = locations[m][1] - 1
 
+        print(locations["monster1"], directions["monster1"])
         assignPlaceToMonster()
 
 
@@ -327,7 +329,7 @@ def decideMonsterDirection(m):
         locations[m][1] = locations[m][1] - 1
         possibleDirections.append(LEFT)
 
-    print(possibleDirections, len(possibleDirections))
+    # print(possibleDirections, len(possibleDirections))
 
     if(len(possibleDirections) > 1):
         if(directions[m] == UP and DOWN in possibleDirections):
@@ -352,9 +354,9 @@ CELL_WALL_HORIZONTAL = 1002
 CELL_PLAYER = 1003
 CELL_MONSTER = 1004
 UP = 1007
-DOWN = 1008
-LEFT = 1009
-RIGHT = 1010
+RIGHT = 1008
+DOWN = 1009
+LEFT = 1010
 CELL_FOOD = 1011
 PLAY = 1012
 END = 1013
@@ -364,11 +366,8 @@ speed = 1
 score = 0
 game_Status = START
 
-directions = {"player": None, "monster1": DOWN,
+directions = {"player": None, "monster1": None,
               "monster2": None, "monster3": None}
-
-# directions = {"player": None, "monster1": None,
-#               "monster2": None, "monster3": None}
 
 
 # locations = {"player": [7, 10], "monster1": [
