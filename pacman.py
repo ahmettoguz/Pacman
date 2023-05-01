@@ -115,11 +115,6 @@ def assignPlaceToMonster():
                ][locations["monster3"][1]] = CELL_MONSTER
 
 
-def assingPlaceToMonsters():
-    # monster 1
-    pass
-
-
 def placeMonstersToBoard():
     game_Board[locations["monster1"][0]
                ][locations["monster1"][1]] = CELL_MONSTER
@@ -274,7 +269,7 @@ def increaseScore():
 
 
 def renewFood():
-    for i in range(1,3+1):
+    for i in range(1, 3+1):
         m = "monster" + str(i)
         if (directions[m] == UP and game_Board[locations[m][0] - 1][locations[m][1]] == CELL_FOOD) or (directions[m] == RIGHT and game_Board[locations[m][0]][locations[m][1] + 1] == CELL_FOOD) or (directions[m] == DOWN and game_Board[locations[m][0] + 1][locations[m][1]] == CELL_FOOD) or (directions[m] == LEFT and game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD):
             addFood()
@@ -376,11 +371,8 @@ game_Status = START
 directions = {"player": None, "monster1": None,
               "monster2": None, "monster3": None}
 
-
-# locations = {"player": [7, 10], "monster1": [
-#     5, 8], "monster2": [5, 9], "monster3": [5, 10]}
-locations = {"player": [7, 6], "monster1": [
-    1, 13], "monster2": [5, 9], "monster3": [5, 10]}
+locations = {"player": [7, 10], "monster1": [
+    5, 8], "monster2": [5, 9], "monster3": [5, 10]}
 
 keyboard.on_press(on_key_press)
 game_Board = initGameBoard()
