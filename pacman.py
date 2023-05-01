@@ -130,6 +130,7 @@ def placeMonstersToBoard():
 
 
 def displayTitle():
+    speedTitle = "Normal"
     if speed == 0.1:
         speedTitle = "Fast"
     elif speed == 0.3:
@@ -292,17 +293,53 @@ def moveMonsters():
         m = "monster" + str(index)
 
         clearMonsterLocation(m)
+        decideMonsterDirection(m)
 
         if directions[m] == UP and (game_Board[locations[m][0] - 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_MONSTER):
             locations[m][0] = locations[m][0] - 1
+
         elif directions[m] == RIGHT and (game_Board[locations[m][0]][locations[m][1] + 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_MONSTER):
             locations[m][1] = locations[m][1] + 1
+
         elif directions[m] == DOWN and (game_Board[locations[m][0] + 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_MONSTER):
             locations[m][0] = locations[m][0] + 1
+
         elif directions[m] == LEFT and (game_Board[locations[m][0]][locations[m][1] - 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_MONSTER):
             locations[m][1] = locations[m][1] - 1
 
         assignPlaceToMonster()
+
+
+def decideMonsterDirection(m):
+    possibleDirections = []
+
+    if (game_Board[locations[m][0] - 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] - 1][locations[m][1]] == CELL_MONSTER):
+        possibleDirections.append(UP)
+
+    if (game_Board[locations[m][0]][locations[m][1] + 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] + 1] == CELL_MONSTER):
+        possibleDirections.append(RIGHT)
+
+    if (game_Board[locations[m][0] + 1][locations[m][1]] == CELL_EMPTY or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_FOOD or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_PLAYER or game_Board[locations[m][0] + 1][locations[m][1]] == CELL_MONSTER):
+        locations[m][0] = locations[m][0] + 1
+        possibleDirections.append(DOWN)
+
+    if (game_Board[locations[m][0]][locations[m][1] - 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_MONSTER):
+        locations[m][1] = locations[m][1] - 1
+        possibleDirections.append(LEFT)
+
+    print(possibleDirections, len(possibleDirections))
+
+    if(len(possibleDirections) > 1):
+        if(directions[m] == UP and DOWN in possibleDirections):
+            possibleDirections.remove(DOWN)
+        elif(directions[m] == DOWN and UP in possibleDirections):
+            possibleDirections.remove(UP)
+        elif(directions[m] == LEFT and RIGHT in possibleDirections):
+            possibleDirections.remove(RIGHT)
+        elif(directions[m] == RIGHT and LEFT in possibleDirections):
+            possibleDirections.remove(LEFT)
+
+    directions[m] = random.choice(possibleDirections)
 
 
 # MAIN--------
@@ -323,7 +360,7 @@ PLAY = 1012
 END = 1013
 START = 1014
 
-speed = 0.3
+speed = 1
 score = 0
 game_Status = START
 
@@ -335,7 +372,7 @@ directions = {"player": None, "monster1": DOWN,
 
 
 # locations = {"player": [7, 10], "monster1": [
-#     5, 8], "monster2": [5, 9], "monster3": [5, 10]} 
+#     5, 8], "monster2": [5, 9], "monster3": [5, 10]}
 locations = {"player": [7, 6], "monster1": [
     2, 6], "monster2": [5, 9], "monster3": [5, 10]}
 
