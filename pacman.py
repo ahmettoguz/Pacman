@@ -309,7 +309,7 @@ def moveMonsters():
 
         elif directions[m] == LEFT and (game_Board[locations[m][0]][locations[m][1] - 1] == CELL_EMPTY or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_PLAYER or game_Board[locations[m][0]][locations[m][1] - 1] == CELL_MONSTER):
             locations[m][1] = locations[m][1] - 1
-            
+
         assignPlaceToMonster()
 
 
@@ -337,7 +337,8 @@ def decideMonsterDirection(m):
             possibleDirections.remove(RIGHT)
         elif(directions[m] == RIGHT and LEFT in possibleDirections):
             possibleDirections.remove(LEFT)
-            
+
+    if(len(possibleDirections) >= 1):
         directions[m] = random.choice(possibleDirections)
     else:
         directions[m] = None
@@ -390,6 +391,8 @@ while True:
         displayTitle()
         moveMonsters()
         movePlayer()
+        for i in range(1, 3+1):
+            print(directions["monster" + str(i)])
         displayBoard()
 
     elif game_Status == END:
