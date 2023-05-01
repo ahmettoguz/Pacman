@@ -273,6 +273,13 @@ def increaseScore():
         addFood()
 
 
+def renewFood():
+    for i in range(1,3+1):
+        m = "monster" + str(i)
+        if (directions[m] == UP and game_Board[locations[m][0] - 1][locations[m][1]] == CELL_FOOD) or (directions[m] == RIGHT and game_Board[locations[m][0]][locations[m][1] + 1] == CELL_FOOD) or (directions[m] == DOWN and game_Board[locations[m][0] + 1][locations[m][1]] == CELL_FOOD) or (directions[m] == LEFT and game_Board[locations[m][0]][locations[m][1] - 1] == CELL_FOOD):
+            addFood()
+
+
 def checkLose():
     global game_Status
 
@@ -389,10 +396,9 @@ while True:
     if game_Status == PLAY:
         increaseScore()
         displayTitle()
+        renewFood()
         moveMonsters()
         movePlayer()
-        for i in range(1, 3+1):
-            print(directions["monster" + str(i)])
         displayBoard()
 
     elif game_Status == END:
